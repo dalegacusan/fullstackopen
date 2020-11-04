@@ -1,34 +1,59 @@
-import React, { useState } from "react";
+import React from "react";
 import './App.css';
-import Header from "../Header/Header";
-import Content from "../Content/Content";
+import Course from "../Course/Course";
 
 function App() {
 
-  const course = 'Half Stack application development';
-  const content = [
+  const courses = [
     {
+      name: 'Half Stack application development',
       id: 1,
-      partName: "Fundamentals of React",
-      exercises: 10
+      parts: [
+        {
+          name: 'Fundamentals of React',
+          exercises: 10,
+          id: 1
+        },
+        {
+          name: 'Using props to pass data',
+          exercises: 7,
+          id: 2
+        },
+        {
+          name: 'State of a component',
+          exercises: 14,
+          id: 3
+        },
+        {
+          name: 'Redux',
+          exercises: 11,
+          id: 4
+        }
+      ]
     },
     {
+      name: 'Node.js',
       id: 2,
-      partName: "Using props to pass data",
-      exercises: 7
-    },
-    {
-      id: 3,
-      partName: "State of a Component",
-      exercises: 14
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
     }
-  ];
+  ]
 
   return (
     <div className="App">
       <div>
-        <Header course={course} />
-        <Content content={content} />
+        <Course content={courses[0]} />
+        <Course content={courses[1]} />
       </div>
     </div>
   );
