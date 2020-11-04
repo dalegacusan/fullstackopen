@@ -34,7 +34,6 @@ export default function App() {
     }
   };
 
-
   const statisticsContainer = (
     <div>
       <table>
