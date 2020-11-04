@@ -14,8 +14,6 @@ export default function App() {
   const average = (good / total) - (bad / total);
   const positive = 100 * (good / total);
 
-  const statistics = { good, neutral, bad, total, average, positive };
-
   const setStatistic = (event) => {
     setHasStatistics(true);
 
