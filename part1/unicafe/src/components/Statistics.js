@@ -9,6 +9,7 @@ export default function Statistics(props) {
                 <span>{text}</span>
             </td>
             <td>
+                {/* Put a % sign if component to render is positive */}
                 <span>{statistic}{text === "positive" ? "%" : null}</span>
             </td>
         </tr>
