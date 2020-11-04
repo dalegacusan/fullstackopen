@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './App.css';
 import Anecdote from "./components/Anecdote";
 import MostVotesAnecdote from "./components/MostVotesAnecdote";
@@ -6,6 +6,7 @@ import MostVotesAnecdote from "./components/MostVotesAnecdote";
 function App() {
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState(new Uint8Array(6));
+  const [mostVotes, setMostVotes] = useState(0);
 
   const anecdotes = [
     'If it hurts, do it more often',
@@ -20,6 +21,7 @@ function App() {
     const randomNumber = Math.floor((Math.random() * anecdotes.length));
 
     setSelected(randomNumber);
+
   }
 
   const addVote = () => {
@@ -32,15 +34,24 @@ function App() {
     });
 
   }
-  
+
+  useEffect(() => {
+    setMostVotes(votes.indexOf(Math.max(...votes)));
+  })
+
+  console.log(votes);
+  console.log("selected Index", selected);
+  console.log("Votes Array", votes);
+  // console.log("Votes", votes[mostVotes]);
+
   return (
     <div className="App">
       <h1>Anecdote of the Day</h1>
-      <Anecdote anecdotes={anecdotes} selected={selected} votes={votes}/>
+      <Anecdote anecdotes={anecdotes} selected={selected} votes={votes} />
       <button type="button" onClick={addVote}>Vote</button>
       <button type="button" onClick={generateAnecdote}>Next Anecdote</button>
-      
-      <MostVotesAnecdote anecdotes={anecdotes} votes={votes}/>
+
+      <MostVotesAnecdote anecdotes={anecdotes} mostVotes={anecdotes[mostVotes]} />
     </div>
   );
 }

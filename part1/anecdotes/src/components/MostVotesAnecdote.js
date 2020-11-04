@@ -2,12 +2,12 @@ import React from "react";
 
 export default function MostVotesAnecdote(props) {
 
-    const { anecdotes, votes } = props;
+    const { mostVotes } = props;
 
     return (
         <div>
             <h1>Anecdote with Most Votes</h1>
-            <p>{anecdotes[votes.indexOf(Math.max(...votes))]}</p>
+            <p>{mostVotes}</p>
         </div>
     );
 }
