@@ -30,7 +30,7 @@ export default function App() {
         setBad((currentNum) => (currentNum += 1));
         break;
       default:
-        console.log("No button clicked");
+        console.log("Please click a button.");
     }
   };
 
