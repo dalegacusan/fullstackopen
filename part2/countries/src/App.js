@@ -36,29 +36,12 @@ export default function App() {
     } else if (filteredArray.length > 1 && filteredArray.length <= 10) {
       toDisplay = filteredArray.map(country => {
         return (
-          <CountryView key={country.area} country={country} />
+          <CountryView key={country.area} country={country} oneResult={false} />
         );
       })
     } else if (filteredArray.length === 1) {
-      const { name, capital, population, languages, flag } = filteredArray[0];
       toDisplay = (
-        <div>
-          <h2>{name}</h2>
-
-          <img src={flag} className="flagImg" alt="countryFlag" />
-
-          <p>Capital: {capital}</p>
-          <p>Population: {population}</p>
-          <h4>Languages</h4>
-          <ul>
-            {
-              languages.map(lang => {
-                const { name } = lang;
-                return <li key={name}>{name}</li>
-              })
-            }
-          </ul>
-        </div>
+        <CountryView country={filteredArray[0]} oneResult={true} />
       );
     }
 

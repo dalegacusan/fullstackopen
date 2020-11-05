@@ -1,23 +1,27 @@
 import React, { useState } from "react";
 
 export default function CountryView(props) {
+    const { oneResult } = props;
     const { name, capital, population, languages, flag } = props.country;
 
     const [buttonClicked, setButtonClicked] = useState(false);
 
-    const handleShowMoreClick = () => {
-        setButtonClicked(!buttonClicked);
-    }
+    const handleShowMoreClick = () => setButtonClicked(!buttonClicked);
+
 
     return (
         <div>
             <span>{name}</span>
-            <button type="button" name={name} onClick={() => handleShowMoreClick()}>
-                {buttonClicked ? "Show Less" : "Show More"}
-            </button>
 
             {
-                buttonClicked ?
+                // If show only one result, hide button, else, show button.
+                oneResult ? null : <button type="button" name={name} onClick={() => handleShowMoreClick()}>
+                    {buttonClicked ? "Show Less" : "Show More"}
+                </button>
+            }
+
+            {
+                buttonClicked || oneResult ?
                     <div>
                         <h2>{name}</h2>
 
