@@ -1,9 +1,11 @@
 import React from "react";
 
-export default function Filter() {
+export default function Filter(props) {
+    const { filterName, handleFilterChange } = props;
+
     return (
         <div>
-            <p>Filter</p>
+            Filter shown with <input type="text" value={filterName} onChange={handleFilterChange} />
         </div>
     );
 }

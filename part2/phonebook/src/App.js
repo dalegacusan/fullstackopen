@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import "./App.css";
+import Persons from "./components/Persons";
+import PersonForm from "./components/PersonForm";
+import Filter from "./components/Filter";
 
 export default function App() {
   const [persons, setPersons] = useState([
@@ -43,40 +46,13 @@ export default function App() {
 
       <h2>Phonebook</h2>
 
-      <div>
-        Filter shown with <input type="text" value={filterName} onChange={handleFilterChange} />
-      </div>
+      <Filter filterName={filterName} handleFilterChange={handleFilterChange} />
 
       <h2>Add New Contact</h2>
-      <form onSubmit={handleFormSubmit}>
-        <div>
-          Name: <input type="text" value={newName} name="name" onChange={handleInputChange} />
-        </div>
-        <div>
-          Number: <input type="text" value={newNumber} name="number" onChange={handleInputChange} />
-        </div>
-        <div>
-          <button type="submit">Add</button>
-        </div>
-      </form>
 
-      <h2>Numbers</h2>
-      Filtered:
-        {
-          persons.map(person => {
-            const { name } = person;
-            const personName = name.toLowerCase();
-            const filterEntry = filterName.toLowerCase();
+      <PersonForm newName={newName} newNumber={newNumber} handleInputChange={handleInputChange} handleFormSubmit={handleFormSubmit} />
 
-            // Check if filterEntry is found on personName
-            if (personName.indexOf(filterEntry) > -1) {
-              return <p key={name}>{name} <span>{person.number}</span></p>;
-            } else {
-              return null;
-            }
-
-          })
-        }
+      <Persons persons={persons} filterName={filterName} />
 
     </div>
   );
