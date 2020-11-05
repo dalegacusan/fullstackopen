@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import CountryView from "./components/CountryView";
 import axios from "axios";
 
 export default function App() {
@@ -34,9 +35,9 @@ export default function App() {
       toDisplay = <p>Too many matches, specify another filter</p>;
     } else if (filteredArray.length > 1 && filteredArray.length <= 10) {
       toDisplay = filteredArray.map(country => {
-        const { name } = country;
-
-        return <p key={name}>{name}</p>;
+        return (
+          <CountryView key={country.area} country={country} />
+        );
       })
     } else if (filteredArray.length === 1) {
       const { name, capital, population, languages, flag } = filteredArray[0];
@@ -44,7 +45,7 @@ export default function App() {
         <div>
           <h2>{name}</h2>
 
-          <img src={flag} className="flagImg" />
+          <img src={flag} className="flagImg" alt="countryFlag" />
 
           <p>Capital: {capital}</p>
           <p>Population: {population}</p>
@@ -57,7 +58,6 @@ export default function App() {
               })
             }
           </ul>
-          {console.log(filteredArray[0])}
         </div>
       );
     }
