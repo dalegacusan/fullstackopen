@@ -22,8 +22,7 @@ export default function App() {
 
   const displayedCountries = () => {
     let toDisplay = "";
-    const countriesCopy = [...countries];
-    const filteredArray = countriesCopy.filter((country) => {
+    const filteredArray = [...countries].filter((country) => {
       const { name } = country;
       const countryName = name.toLowerCase();
       const searchText = searchValue.toLowerCase();
@@ -31,14 +30,22 @@ export default function App() {
       return countryName.indexOf(searchText) > -1;
     });
 
-    if (filteredArray.length > 1 && filteredArray.length > 10) {
+    if (filteredArray.length > 10) {
       toDisplay = <p>Too many matches, specify another filter</p>;
+    } else if (filteredArray.length > 1 && filteredArray.length <= 10) {
+      toDisplay = filteredArray.map(country => {
+        const { name } = country;
+
+        return <p key={name}>{name}</p>;
+      })
     } else if (filteredArray.length === 1) {
       const { name, capital, population, languages, flag } = filteredArray[0];
       toDisplay = (
         <div>
           <h2>{name}</h2>
+
           <img src={flag} className="flagImg" />
+
           <p>Capital: {capital}</p>
           <p>Population: {population}</p>
           <h4>Languages</h4>
@@ -53,12 +60,6 @@ export default function App() {
           {console.log(filteredArray[0])}
         </div>
       );
-    } else {
-      toDisplay = filteredArray.map(country => {
-        const { name } = country;
-
-        return <p key={name}>{name}</p>;
-      })
     }
 
     return toDisplay;
