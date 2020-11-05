@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import CountryView from "./components/CountryView";
 import axios from "axios";
+const testKey = process.env.REACT_APP_TEST_KEY;
 
 export default function App() {
+  console.log(testKey);
   const [searchValue, setSearchValue] = useState("");
   const [countries, setCountries] = useState([]);
 
