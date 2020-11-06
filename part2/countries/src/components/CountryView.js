@@ -70,8 +70,6 @@ export default function CountryView(props) {
                                 </div> : null
                         }
 
-
-
                     </div> : null
             }
         </div>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios'
+import axios from 'axios';
+import { v4 as uuidv4 } from "uuid";
+import noteService from "./services/personHelpers";
 import "./App.css";
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
@@ -23,7 +25,23 @@ export default function App() {
     if (persons.find(person => person.name === newName)) {
       alert(`${newName} is already added to phonebook`);
     } else {
-      setPersons([...persons, { name: newName, number: newNumber }]);
+
+      const newPerson = {
+        id: uuidv4(),
+        name: newName,
+        number: newNumber,
+        date: new Date(),
+        important: Math.random() < 0.5
+      };
+
+      noteService.create(newPerson)
+        .then(response => {
+          setPersons([...persons, response]);
+
+          setNewName('');
+          setNewNumber('');
+        });
+
     }
 
     setNewName('');
@@ -37,22 +55,17 @@ export default function App() {
     setFilterName(value);
   }
 
+  const handleDelete = (id) => {
+    noteService.deletePerson(id);
+
+    setPersons(persons.filter(person => person.id !== id));
+  }
+
   useEffect(() => {
-    console.log("Effect");
-
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        const notes = response.data;
-        console.log("Promise Fulfilled");
-        setPersons(notes);
-      });
+    noteService
+      .getAll()
+      .then(response => setPersons(response));
   }, []);
-
-  console.log("render", persons.length, "persons");
-
-
-
 
   return (
     <div className="App">
@@ -65,7 +78,7 @@ export default function App() {
 
       <PersonForm newName={newName} newNumber={newNumber} handleInputChange={handleInputChange} handleFormSubmit={handleFormSubmit} />
 
-      <Persons persons={persons} filterName={filterName} />
+      <Persons persons={persons} filterName={filterName} handleDelete={handleDelete} />
 
     </div>
   );
