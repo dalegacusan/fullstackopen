@@ -6,6 +6,7 @@ import "./App.css";
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
+import personHelpers from "./services/personHelpers";
 
 export default function App() {
   const [persons, setPersons] = useState([])
@@ -22,18 +23,23 @@ export default function App() {
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
-    if (persons.find(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
-    } else {
+    const newPerson = {
+      id: uuidv4(),
+      name: newName,
+      number: newNumber,
+      date: new Date(),
+    };
 
-      const newPerson = {
-        id: uuidv4(),
-        name: newName,
-        number: newNumber,
-        date: new Date(),
-        important: Math.random() < 0.5
+    const currentPerson = persons.find(person => person.name === newName);
+
+    if (currentPerson) {
+      if (window.confirm(`${newName} is already added to phonebook, would you like to replace the old number with a new one?`)) {
+        personHelpers.updatePerson(currentPerson, { ...currentPerson, number: newNumber })
+          .then(response => {
+            setPersons(persons.map(person => person.id === response.data.id ? response.data : person));
+          });
       };
-
+    } else {
       noteService.create(newPerson)
         .then(response => {
           setPersons([...persons, response]);
@@ -41,7 +47,6 @@ export default function App() {
           setNewName('');
           setNewNumber('');
         });
-
     }
 
     setNewName('');
