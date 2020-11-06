@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./App.css";
 import CountryView from "./components/CountryView";
-import axios from "axios";
-const testKey = process.env.REACT_APP_TEST_KEY;
+
+const WEATHER_API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
 
 export default function App() {
-  console.log(testKey);
   const [searchValue, setSearchValue] = useState("");
   const [countries, setCountries] = useState([]);
 
@@ -16,11 +16,12 @@ export default function App() {
   };
 
   useEffect(() => {
-    axios.get("https://restcountries.eu/rest/v2/all").then((response) => {
-      const { data } = response;
+    axios.get("https://restcountries.eu/rest/v2/all")
+      .then((response) => {
+        const { data } = response;
 
-      setCountries(data);
-    });
+        setCountries(data);
+      });
   }, []);
 
   const displayedCountries = () => {
@@ -42,8 +43,9 @@ export default function App() {
         );
       })
     } else if (filteredArray.length === 1) {
+
       toDisplay = (
-        <CountryView country={filteredArray[0]} oneResult={true} />
+        <CountryView country={filteredArray[0]} oneResult={true} WEATHER_API_KEY={WEATHER_API_KEY} />
       );
     }
 

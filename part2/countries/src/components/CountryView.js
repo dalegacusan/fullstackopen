@@ -1,23 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function CountryView(props) {
-    const { oneResult } = props;
-    const { name, capital, population, languages, flag } = props.country;
-
     const [buttonClicked, setButtonClicked] = useState(false);
+    const [weatherData, setWeatherData] = useState({});
+
+    const { oneResult, WEATHER_API_KEY } = props;
+    const { name, capital, population, languages, flag } = props.country;
+    const { main, wind, weather } = weatherData;
+
+    useEffect(() => {
+        oneResult ?
+            axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${name}&appid=${WEATHER_API_KEY}`)
+                .then(response => {
+                    const { data } = response;
+
+                    console.log("API successfully made request");
+
+                    setWeatherData(data);
+                })
+            : console.log("API hasn't made a request yet");
+
+    }, []);
 
     const handleShowMoreClick = () => setButtonClicked(!buttonClicked);
 
-
     return (
         <div>
-            <span>{name}</span>
 
             {
                 // If show only one result, hide button, else, show button.
-                oneResult ? null : <button type="button" name={name} onClick={() => handleShowMoreClick()}>
-                    {buttonClicked ? "Show Less" : "Show More"}
-                </button>
+                oneResult ? null : (
+                    <div>
+                        <span>{name}</span>
+                        <button type="button" name={name} onClick={() => handleShowMoreClick()}>
+                            {buttonClicked ? "Show Less" : "Show More"}
+                        </button>
+                    </div>)
+
             }
 
             {
@@ -38,6 +58,20 @@ export default function CountryView(props) {
                                 })
                             }
                         </ul>
+
+                        {
+                            Object.keys(weatherData).length !== 0 ?
+                                <div>
+                                    <h2>Weather in {name}</h2>
+
+                                    <p><b>Temperature:</b> {main.temp}</p>
+                                    <img src={`http://openweathermap.org/img/w/${weather[0].icon}.png`} alt="weatherIcon" />
+                                    <p><b>Wind:</b> {wind.deg}</p>
+                                </div> : null
+                        }
+
+
+
                     </div> : null
             }
         </div>
