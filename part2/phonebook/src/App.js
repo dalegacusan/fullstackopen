@@ -55,10 +55,12 @@ export default function App() {
     setFilterName(value);
   }
 
-  const handleDelete = (id) => {
-    noteService.deletePerson(id);
+  const handleDelete = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      noteService.deletePerson(id);
 
-    setPersons(persons.filter(person => person.id !== id));
+      setPersons(persons.filter(person => person.id !== id));
+    }
   }
 
   useEffect(() => {

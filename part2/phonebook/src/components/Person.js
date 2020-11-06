@@ -8,7 +8,7 @@ export default function Person(props) {
     return (
         <div>
             <span key={name}>{name} <span>{number}</span></span>
-            <button type="button" onClick={() => handleDelete(id)}>Delete</button>
+            <button type="button" onClick={() => handleDelete(id, name)}>Delete</button>
         </div>
     );
 }
