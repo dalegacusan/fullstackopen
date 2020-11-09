@@ -34,13 +34,14 @@ export default function App() {
 
     const currentPerson = persons.find(person => person.name === newName);
 
+    // If currentPerson is found
     if (currentPerson) {
 
       if (window.confirm(`${newName} is already added to phonebook, would you like to replace the old number with a new one?`)) {
 
         personHelpers.updatePerson(currentPerson, { ...currentPerson, number: newNumber })
           .then(response => {
-            // If ID matches, place returned object to current index, else, return original object.
+            // If ID matches, place returned object to current index, else, return original object from array instead.
             handleNotification("updateSuccess", currentPerson);
             setPersons(persons.map(person => person.id === response.data.id ? response.data : person));
           })
