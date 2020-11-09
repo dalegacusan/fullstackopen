@@ -14,7 +14,7 @@ export default function App() {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filterName, setFilterName] = useState('');
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [messageNotification, setMessageNotification] = useState({ status: null, message: null });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -27,7 +27,7 @@ export default function App() {
 
     const newPerson = {
       id: uuidv4(),
-      name: "newName",
+      name: newName,
       number: newNumber,
       date: new Date(),
     };
@@ -41,14 +41,11 @@ export default function App() {
         personHelpers.updatePerson(currentPerson, { ...currentPerson, number: newNumber })
           .then(response => {
             // If ID matches, place returned object to current index, else, return original object.
+            handleNotification("updateSuccess", currentPerson);
             setPersons(persons.map(person => person.id === response.data.id ? response.data : person));
           })
           .catch(error => {
-            setErrorMessage(`Person '${currentPerson.name}' was already removed from server`);
-
-            setTimeout(() => {
-              setErrorMessage(null);
-            }, 5000);
+            handleNotification("error", currentPerson);
           });
 
       };
@@ -56,6 +53,7 @@ export default function App() {
     } else {
       personHelpers.create(newPerson)
         .then(response => {
+          handleNotification("success", response);
           setPersons([...persons, response]);
 
           setNewName('');
@@ -82,6 +80,20 @@ export default function App() {
     }
   }
 
+  const handleNotification = (status, personObj) => {
+    if (status === "success") {
+      setMessageNotification({ status, message: `Added ${personObj.name}` });
+    } else if (status === "error") {
+      setMessageNotification({ status, message: `Person ${personObj.name} was already removed from server` });
+    } else if (status === "updateSuccess"){
+      setMessageNotification({ status, message: `Successfully updated ${personObj.name}` });
+    }
+
+    setTimeout(() => {
+      setMessageNotification({ status: null, message: null });
+    }, 5000);
+  }
+
   useEffect(() => {
     personHelpers
       .getAll()
@@ -92,7 +104,7 @@ export default function App() {
     <div className="App">
 
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification message={messageNotification} />
 
       <Filter filterName={filterName} handleFilterChange={handleFilterChange} />
 
