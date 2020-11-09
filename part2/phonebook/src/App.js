@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
 import { v4 as uuidv4 } from "uuid";
-import noteService from "./services/personHelpers";
 import "./App.css";
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
+import Notification from "./components/Notification";
 import personHelpers from "./services/personHelpers";
+
+// npx json-server --port 3001 --watch db.jsons
 
 export default function App() {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filterName, setFilterName] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -25,7 +27,7 @@ export default function App() {
 
     const newPerson = {
       id: uuidv4(),
-      name: newName,
+      name: "newName",
       number: newNumber,
       date: new Date(),
     };
@@ -33,14 +35,26 @@ export default function App() {
     const currentPerson = persons.find(person => person.name === newName);
 
     if (currentPerson) {
+
       if (window.confirm(`${newName} is already added to phonebook, would you like to replace the old number with a new one?`)) {
+
         personHelpers.updatePerson(currentPerson, { ...currentPerson, number: newNumber })
           .then(response => {
+            // If ID matches, place returned object to current index, else, return original object.
             setPersons(persons.map(person => person.id === response.data.id ? response.data : person));
+          })
+          .catch(error => {
+            setErrorMessage(`Person '${currentPerson.name}' was already removed from server`);
+
+            setTimeout(() => {
+              setErrorMessage(null);
+            }, 5000);
           });
+
       };
+
     } else {
-      noteService.create(newPerson)
+      personHelpers.create(newPerson)
         .then(response => {
           setPersons([...persons, response]);
 
@@ -62,14 +76,14 @@ export default function App() {
 
   const handleDelete = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
-      noteService.deletePerson(id);
+      personHelpers.deletePerson(id);
 
       setPersons(persons.filter(person => person.id !== id));
     }
   }
 
   useEffect(() => {
-    noteService
+    personHelpers
       .getAll()
       .then(response => setPersons(response));
   }, []);
@@ -78,6 +92,7 @@ export default function App() {
     <div className="App">
 
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
 
       <Filter filterName={filterName} handleFilterChange={handleFilterChange} />
 
