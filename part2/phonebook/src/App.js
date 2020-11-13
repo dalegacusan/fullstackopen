@@ -7,7 +7,7 @@ import Filter from "./components/Filter";
 import Notification from "./components/Notification";
 import personHelpers from "./services/personHelpers";
 
-// npx json-server --port 3001 --watch db.jsons
+// npx json-server --port 3001 --watch db.json
 
 export default function App() {
   const [persons, setPersons] = useState([])
@@ -26,10 +26,8 @@ export default function App() {
     e.preventDefault();
 
     const newPerson = {
-      id: uuidv4(),
       name: newName,
       number: newNumber,
-      date: new Date(),
     };
 
     const currentPerson = persons.find(person => person.name === newName);
