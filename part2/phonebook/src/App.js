@@ -22,6 +22,7 @@ export default function App() {
     name === "name" ? setNewName(value) : setNewNumber(value);
   }
 
+  // currentPerson is CONFLICTING here
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
@@ -30,35 +31,35 @@ export default function App() {
       number: newNumber,
     };
 
-    const currentPerson = persons.find(person => person.name === newName);
+    // const currentPerson = persons.find(person => person.name === newName);
 
-    // If currentPerson is found
-    if (currentPerson) {
+    // // If currentPerson is found
+    // if (currentPerson) {
 
-      if (window.confirm(`${newName} is already added to phonebook, would you like to replace the old number with a new one?`)) {
+    //   if (window.confirm(`${newName} is already added to phonebook, would you like to replace the old number with a new one?`)) {
 
-        personHelpers.updatePerson(currentPerson, { ...currentPerson, number: newNumber })
-          .then(response => {
-            // If ID matches, place returned object to current index, else, return original object from array instead.
-            handleNotification("updateSuccess", currentPerson);
-            setPersons(persons.map(person => person.id === response.data.id ? response.data : person));
-          })
-          .catch(error => {
-            handleNotification("error", currentPerson);
-          });
+    //     personHelpers.updatePerson(currentPerson, { ...currentPerson, number: newNumber })
+    //       .then(response => {
+    //         // If ID matches, place returned object to current index, else, return original object from array instead.
+    //         handleNotification("updateSuccess", currentPerson);
+    //         setPersons(persons.map(person => person.id === response.data.id ? response.data : person));
+    //       })
+    //       .catch(error => {
+    //         handleNotification("error", currentPerson);
+    //       });
 
-      };
+    //   };
 
-    } else {
-      personHelpers.create(newPerson)
-        .then(response => {
-          handleNotification("success", response);
-          setPersons([...persons, response]);
+    // } else {
+    personHelpers.create(newPerson)
+      .then(response => {
+        handleNotification("success", response);
+        setPersons([...persons, response]);
 
-          setNewName('');
-          setNewNumber('');
-        });
-    }
+        setNewName('');
+        setNewNumber('');
+      });
+    // }
 
     setNewName('');
     setNewNumber('');
@@ -73,9 +74,9 @@ export default function App() {
 
   const handleDelete = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
-      personHelpers.deletePerson(id);
-
-      setPersons(persons.filter(person => person.id !== id));
+      personHelpers.deletePerson(id).then(deletedPerson => {
+        setPersons(persons.filter(person => person.id !== id));
+      });
     }
   }
 
@@ -84,7 +85,7 @@ export default function App() {
       setMessageNotification({ status, message: `Added ${personObj.name}` });
     } else if (status === "error") {
       setMessageNotification({ status, message: `Person ${personObj.name} was already removed from server` });
-    } else if (status === "updateSuccess"){
+    } else if (status === "updateSuccess") {
       setMessageNotification({ status, message: `Successfully updated ${personObj.name}` });
     }
 
