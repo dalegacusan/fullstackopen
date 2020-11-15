@@ -74,15 +74,19 @@ export default function App() {
 
   const handleDelete = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
-      personHelpers.deletePerson(id).then(deletedPerson => {
-        setPersons(persons.filter(person => person.id !== id));
-      });
+      personHelpers.deletePerson(id)
+        .then(deletedPerson => {
+          handleNotification("deleted", deletedPerson);
+          setPersons(persons.filter(person => person.id !== id));
+        });
     }
   }
 
   const handleNotification = (status, personObj) => {
     if (status === "success") {
       setMessageNotification({ status, message: `Added ${personObj.name}` });
+    } else if (status === "deleted") {
+      setMessageNotification({ status, message: `Deleted ${personObj.data.name}` });
     } else if (status === "error") {
       setMessageNotification({ status, message: `Person ${personObj.name} was already removed from server` });
     } else if (status === "updateSuccess") {
@@ -91,7 +95,7 @@ export default function App() {
 
     setTimeout(() => {
       setMessageNotification({ status: null, message: null });
-    }, 5000);
+    }, 3000);
   }
 
   useEffect(() => {
