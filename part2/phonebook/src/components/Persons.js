@@ -1,5 +1,5 @@
 import React from "react";
-import Person from "./Person";
+import Person from "./Persons/Person";
 
 export default function Persons(props) {
 

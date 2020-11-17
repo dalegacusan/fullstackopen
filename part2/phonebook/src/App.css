@@ -14,3 +14,8 @@
 .success{
   color: rgb(60, 202, 41);
 }
+
+/* =========== Header =========== */
+.section_container{
+  padding: 70px 15px;
+}

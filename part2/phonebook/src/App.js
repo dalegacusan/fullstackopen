@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 import "./App.css";
-import Persons from "./components/Persons";
-import PersonForm from "./components/PersonForm";
-import Filter from "./components/Filter";
+import Navbar from "./components/Navbar/Navbar";
+import Jumbotron from "./components/Jumbotron/Jumbotron";
+import Persons from "./components/Persons/Persons";
+import About from "./components/About/About";
+import Footer from "./components/Footer/Footer";
+
 import Notification from "./components/Notification";
+import HowToUse from "./components/HowToUse";
 import personHelpers from "./services/personHelpers";
 
 // npx json-server --port 3001 --watch db.json
@@ -31,26 +34,6 @@ export default function App() {
       number: newNumber,
     };
 
-    // const currentPerson = persons.find(person => person.name === newName);
-
-    // // If currentPerson is found
-    // if (currentPerson) {
-
-    //   if (window.confirm(`${newName} is already added to phonebook, would you like to replace the old number with a new one?`)) {
-
-    //     personHelpers.updatePerson(currentPerson, { ...currentPerson, number: newNumber })
-    //       .then(response => {
-    //         // If ID matches, place returned object to current index, else, return original object from array instead.
-    //         handleNotification("updateSuccess", currentPerson);
-    //         setPersons(persons.map(person => person.id === response.data.id ? response.data : person));
-    //       })
-    //       .catch(error => {
-    //         handleNotification("error", currentPerson);
-    //       });
-
-    //   };
-
-    // } else {
     personHelpers.create(newPerson)
       .then(response => {
         handleNotification("success", response);
@@ -58,8 +41,15 @@ export default function App() {
 
         setNewName('');
         setNewNumber('');
+      })
+      .catch(err => {
+
+        const { message } = err.response.data;
+
+        console.log(message);
+
+        handleNotification("error", message);
       });
-    // }
 
     setNewName('');
     setNewNumber('');
@@ -82,15 +72,13 @@ export default function App() {
     }
   }
 
-  const handleNotification = (status, personObj) => {
+  const handleNotification = (status, messageObj) => {
     if (status === "success") {
-      setMessageNotification({ status, message: `Added ${personObj.name}` });
+      setMessageNotification({ status, message: `Added ${messageObj.name}` });
     } else if (status === "deleted") {
-      setMessageNotification({ status, message: `Deleted ${personObj.data.name}` });
+      setMessageNotification({ status, message: `Deleted ${messageObj.data.name}` });
     } else if (status === "error") {
-      setMessageNotification({ status, message: `Person ${personObj.name} was already removed from server` });
-    } else if (status === "updateSuccess") {
-      setMessageNotification({ status, message: `Successfully updated ${personObj.name}` });
+      setMessageNotification({ status, message: messageObj });
     }
 
     setTimeout(() => {
@@ -106,17 +94,38 @@ export default function App() {
 
   return (
     <div className="App">
-
+      {/* <HowToUse />
       <h2>Phonebook</h2>
       <Notification message={messageNotification} />
 
-      <Filter filterName={filterName} handleFilterChange={handleFilterChange} />
+      
 
       <h2>Add New Contact</h2>
 
       <PersonForm newName={newName} newNumber={newNumber} handleInputChange={handleInputChange} handleFormSubmit={handleFormSubmit} />
 
+      */}
+
+      <Navbar />
+
+      {/* Header */}
+      <Jumbotron
+        newName={newName}
+        newNumber={newNumber}
+        handleInputChange={handleInputChange}
+        handleFormSubmit={handleFormSubmit}
+        filterName={filterName}
+        handleFilterChange={handleFilterChange}
+      />
+
+      {/* Contact */}
       <Persons persons={persons} filterName={filterName} handleDelete={handleDelete} />
+
+      {/* About */}
+      <About />
+
+      {/* Footer */}
+      <Footer />
 
     </div>
   );
